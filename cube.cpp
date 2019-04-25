@@ -16,7 +16,7 @@ int p[8] = { 0,1,2,3,4,5,6,7 };
 // ----------------------------------------------------------
 // Function Prototypes
 // ----------------------------------------------------------
-void drawcube(float *a1,float *a2,float *a3 , float *a4 , float *a5,float *a6 , float *a7, float *a8)
+void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, float *a7, float *a8)
 {
 	glBegin(GL_POLYGON);
 	glColor3fv(co[0]);
@@ -72,7 +72,7 @@ void drawcube(float *a1,float *a2,float *a3 , float *a4 , float *a5,float *a6 , 
 	glVertex3fv(a8);
 	glEnd();
 	//glFlush();
-	
+
 }
 
 void makepoints()
@@ -108,8 +108,8 @@ void makepoints()
 
 void buildcube()
 {
-	for(int i=0;i<8;i++)
-		drawcube(v[i][0], v[i][1], v[i][2], v[i][3], v[i][4], v[i][5], v[i][6], v[i][7]);			
+	for (int i = 0; i < 8; i++)
+		drawcube(v[i][0], v[i][1], v[i][2], v[i][3], v[i][4], v[i][5], v[i][6], v[i][7]);
 }
 
 void display();
@@ -130,12 +130,12 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
-	
+
 	glRotatef(rotate_x, 1.0, 0.0, 0.0);
 	glRotatef(rotate_y, 0.0, 1.0, 0.0);
-	
+
 	buildcube();
-	
+
 	glutSwapBuffers();
 
 }
@@ -144,12 +144,12 @@ void display() {
 // specialKeys() Callback Function
 // ----------------------------------------------------------
 void specialKeys(int key, int x, int y) {
-	
+
 	//  Right arrow - increase rotation by 5 degree
 	if (key == GLUT_KEY_RIGHT)
 	{
 		rotate_y += 5;
-	} 
+	}
 	//  Left arrow - decrease rotation by 5 degree
 	else if (key == GLUT_KEY_LEFT)
 	{
@@ -188,19 +188,19 @@ void keyboard(unsigned char key, int x, int y)
 						float x = v[p[i]][j][0];
 						v[p[i]][j][2] = z * cos(theta) - x * sin(theta);
 						v[p[i]][j][0] = x * cos(theta) + z * sin(theta);
-
+						
 					}
 				}
 			}
-			for (int k = 0; k < 80000000; k++);
+			//for (int k = 0; k < 80000000; k++);
 			glutPostRedisplay();
 		}
 		int temp = p[0];
 		p[0] = p[4];
 		p[4] = p[5];
 		p[5] = p[1];
-		p[1] = temp; 
-		
+		p[1] = temp;
+
 	}
 	if (key == 'a')
 	{
@@ -245,7 +245,7 @@ void keyboard(unsigned char key, int x, int y)
 		p[1] = p[5];
 		p[5] = p[4];
 		p[4] = temp;
-		
+
 	}
 	if (key == 's')
 	{
@@ -280,7 +280,7 @@ int main(int argc, char* argv[]) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(500, 500);
-	
+
 	glutCreateWindow("dumb box");
 
 	glEnable(GL_DEPTH_TEST);

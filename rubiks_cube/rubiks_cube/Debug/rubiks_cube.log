@@ -1,0 +1,23 @@
+﻿  cube.cpp
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(13): warning C4305: 'initializing': truncation from 'double' to 'float'
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(98): warning C4838: conversion from 'double' to 'float' requires a narrowing conversion
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(90): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(91): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(92): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(93): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(94): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(95): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(96): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(97): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(134): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(135): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(180): warning C4305: 'initializing': truncation from 'double' to 'float'
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(189): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(190): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(215): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(216): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(237): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(238): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(260): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+g:\matharishwa\git repos\rubiks-cube\cube.cpp(261): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  rubiks_cube.vcxproj -> G:\Matharishwa\git repos\Rubiks-cube\rubiks_cube\Debug\rubiks_cube.exe
