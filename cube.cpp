@@ -9,6 +9,42 @@ void init()
 	glLoadIdentity();
 	glOrtho(-2, 2, -2, 2, -2, 2);
 	glMatrixMode(GL_MODELVIEW);
+	GLfloat ambient_lighte[4] = { 0.2,0.2,0.2,1.0 };
+	GLfloat diffuse_light[4] = { 0.7,0.7,0.7,1.0 };		// color
+	GLfloat specular_light[4] = { 1.0, 1.0, 1.0, 1.0 };	// brightness
+	GLfloat light_position[4] = { 0.0, 50.0, 50.0, 1.0 };
+
+	// material brightness capacity
+	GLfloat specularity[4] = { 1.0,1.0,1.0,1.0 };
+	GLint material_specularity = 60;
+
+	// black background
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+	// Gouraud colorization model
+	glShadeModel(GL_SMOOTH);
+
+	// material reflectability
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specularity);
+	// brightness concentration
+	glMateriali(GL_FRONT, GL_SHININESS, material_specularity);
+
+	// activate ambient light
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient_lighte);
+
+	// define light parameters
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_lighte);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+	// enable changing material color
+	glEnable(GL_COLOR_MATERIAL);
+	// enable lighting
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	// enable depth buffering
+	glEnable(GL_DEPTH_TEST);
 }
 float co[7][3] = { {0.3,0.8,0 }, { 0,0.5,1 }, { 1,0.8,0 }, { 0.9,0.9,0.9 }, { 1,0.4,0 }, { 0.9,0,0 }, { 0.2,0.2,0.2 } };
 float v[8][8][3];
@@ -124,7 +160,7 @@ double rotate_x = 0;
 // ----------------------------------------------------------
 // display() Callback function
 // ----------------------------------------------------------
-void display() {
+void display(void) {
 	//  Clear screen and Z-buffer
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -171,37 +207,52 @@ void specialKeys(int key, int x, int y) {
 
 }
 
+void idle1()
+{
+	
+	float theta = 5 * 3.1415 / 180;
+	for (int i = 0; i < 8; i++)
+	{
+		if (i == 0 || i == 1 || i == 4 || i == 5)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				float z = v[p[i]][j][2];
+				float x = v[p[i]][j][0];
+				v[p[i]][j][2] = z * cos(theta) - x * sin(theta);
+				v[p[i]][j][0] = x * cos(theta) + z * sin(theta);
+			}
+			glutPostRedisplay();
+			
+		}
+	}
+	int temp = p[0];
+	p[0] = p[4];
+	p[4] = p[5];
+	p[5] = p[1];
+	p[1] = temp;
+
+	
+	for (int k = 0; k < 18000000; k++);
+/////////////////////////////////////////////////////////////////
+	//if()
+	//glutIdleFunc(NULL);
+////////////////////////////////////////////////////////////////	
+}
 void keyboard(unsigned char key, int x, int y)
 {
 	if (key == 'q')
 	{
-		for (int angle = 5; angle <= 90; angle += 5)
-		{
-			float theta = 5 * 3.1415 / 180;
-			for (int i = 0; i < 8; i++)
-			{
-				if (i == 0 || i == 1 || i == 4 || i == 5)
-				{
-					for (int j = 0; j < 8; j++)
-					{
-						float z = v[p[i]][j][2];
-						float x = v[p[i]][j][0];
-						v[p[i]][j][2] = z * cos(theta) - x * sin(theta);
-						v[p[i]][j][0] = x * cos(theta) + z * sin(theta);
-						
-					}
-				}
-			}
-			//for (int k = 0; k < 80000000; k++);
-			glutPostRedisplay();
-		}
-		int temp = p[0];
-		p[0] = p[4];
-		p[4] = p[5];
-		p[5] = p[1];
-		p[1] = temp;
-
+		
+			
+	
+			glutIdleFunc(idle1);
+			
+		
+			
+			
 	}
+
 	if (key == 'a')
 	{
 		for (int i = 0; i < 8; i++)
@@ -287,6 +338,7 @@ int main(int argc, char* argv[]) {
 	init();
 	makepoints();
 	glutDisplayFunc(display);
+	glutIdleFunc(display);
 	glutSpecialFunc(specialKeys);
 	glutKeyboardFunc(keyboard);
 	glutMainLoop();
