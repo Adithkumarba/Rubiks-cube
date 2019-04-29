@@ -115,7 +115,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\cube.cpp" />
+    <ClCompile Include="..\..\cubewithrot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -263,6 +263,38 @@ void idle3()
 		flagc[3] = 0;
 	}
 }
+void idle4()
+{
+	flagc[4] += 1;
+	float theta = 5 * 3.1415 / 180;
+
+	for (int i = 0; i < 8; i++)
+	{
+		if (i == 1 || i == 3 || i == 5 || i == 7)
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				float z = v[p[i]][j][2];
+				float y = v[p[i]][j][1];
+				v[p[i]][j][2] = z * cos(theta) + y * sin(theta);
+				v[p[i]][j][1] = y * cos(theta) - z * sin(theta);
+
+			}
+			glutPostRedisplay();
+		}
+	}
+	int temp = p[1];
+	p[1] = p[5];
+	p[5] = p[7];
+	p[7] = p[3];
+	p[3] = temp;
+	for (int k = 0; k < 9000000; k++);
+	if (flagc[4] == 18)
+	{
+		glutIdleFunc(NULL);
+		flagc[4] = 0;
+	}
+}
 void keyboard(unsigned char key, int x, int y)
 {
 	if (key == 'q')
@@ -281,26 +313,8 @@ void keyboard(unsigned char key, int x, int y)
 		glutIdleFunc(idle3);
 	}
 	if (key == 's')
-	{
-		for (int i = 0; i < 8; i++)
-		{
-			if (i == 1 || i == 3 || i == 5 || i == 7)
-			{
-				for (int j = 0; j < 8; j++)
-				{
-					float z = v[p[i]][j][2];
-					float y = v[p[i]][j][1];
-					v[p[i]][j][2] = z * cos(3.1415 / 2) + y * sin(3.1415 / 2);
-					v[p[i]][j][1] = y * cos(3.1415 / 2) - z * sin(3.1415 / 2);
-
-				}
-			}
-		}
-		int temp = p[1];
-		p[1] = p[5];
-		p[5] = p[7];
-		p[7] = p[3];
-		p[3] = temp;
+	{	//idle4();
+		glutIdleFunc(idle4);
 	}
 	glutPostRedisplay();
 }
