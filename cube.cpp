@@ -207,46 +207,34 @@ void specialKeys(int key, int x, int y) {
 
 }
 
-void idle1()
-{
-	
-	float theta = 5 * 3.1415 / 180;
-	for (int i = 0; i < 8; i++)
-	{
-		if (i == 0 || i == 1 || i == 4 || i == 5)
-		{
-			for (int j = 0; j < 8; j++)
-			{
-				float z = v[p[i]][j][2];
-				float x = v[p[i]][j][0];
-				v[p[i]][j][2] = z * cos(theta) - x * sin(theta);
-				v[p[i]][j][0] = x * cos(theta) + z * sin(theta);
-			}
-			glutPostRedisplay();
-			
-		}
-	}
-	int temp = p[0];
-	p[0] = p[4];
-	p[4] = p[5];
-	p[5] = p[1];
-	p[1] = temp;
 
-	
-	for (int k = 0; k < 18000000; k++);
-/////////////////////////////////////////////////////////////////
-	//if()
-	//glutIdleFunc(NULL);
-////////////////////////////////////////////////////////////////	
-}
 void keyboard(unsigned char key, int x, int y)
 {
 	if (key == 'q')
 	{
 		
-			
-	
-			glutIdleFunc(idle1);
+		
+		for (int i = 0; i < 8; i++)
+		{
+			if (i == 0 || i == 1 || i == 4 || i == 5)
+			{
+				for (int j = 0; j < 8; j++)
+				{
+					float z = v[p[i]][j][2];
+					float x = v[p[i]][j][0];
+					v[p[i]][j][2] = z * cos(3.1415 / 2) - x * sin(3.1415 / 2);
+					v[p[i]][j][0] = x * cos(3.1415 / 2) + z * sin(3.1415 / 2);
+				}
+				
+
+			}
+		}
+		int temp = p[0];
+		p[0] = p[4];
+		p[4] = p[5];
+		p[5] = p[1];
+		p[1] = temp;
+
 			
 		
 			
