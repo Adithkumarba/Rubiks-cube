@@ -2,8 +2,6 @@
 #include <stdarg.h>
 #include <math.h>
 #include <GL/glut.h>
-int flagc[5] = { 0,0,0,0,0 };
-int flagac[5] = { 0,0,0,0,0 };
 void init()
 {
 	glMatrixMode(GL_PROJECTION);
@@ -11,9 +9,15 @@ void init()
 	glOrtho(-2, 2, -2, 2, -2, 2);
 	glMatrixMode(GL_MODELVIEW);
 }
+// ----------------------------------------------------------
+// Global Variables
+// ----------------------------------------------------------
 float co[7][3] = { {0.3,0.8,0 }, { 0,0.5,1 }, { 1,0.8,0 }, { 0.9,0.9,0.9 }, { 1,0.4,0 }, { 0.9,0,0 }, { 0.2,0.2,0.2 } };
-float v[8][8][3];
-int p[8] = { 0,1,2,3,4,5,6,7 };
+float v[27][8][3];
+int p[27] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26 };
+int f[8] = { 0,0,0,0,0,0,0,0 }, theta = 0;
+double rotate_y = 0;
+double rotate_x = 0;
 // ----------------------------------------------------------
 // Function Prototypes
 // ----------------------------------------------------------
@@ -72,54 +76,301 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a8);
 	glEnd();
 	//glFlush();
-
 }
-
 void makepoints()
 {
 	double start = 1.0;
-	double small_size = 0.975;
-	double intercube_spacing = 0.05;
+	double small_size = 0.65;
+	double intercube_spacing = 0.025;
 	int i = 0;
-
 	for (double z = start; z > -start; z -= small_size + intercube_spacing) {
 		for (double y = start; y > -start; y -= small_size + intercube_spacing) {
 			for (double x = -start; x < start; x += small_size + intercube_spacing) {
-
 				float a[8][3] = {
-					{ x , y, z },
-					{ x + small_size, y, z },
-					{ x + small_size, y - small_size, z },
-					{ x , y - small_size, z },
-					{ x , y, z - small_size },
-					{ x + small_size, y, z - small_size },
-					{ x + small_size, y - small_size, z - small_size },
-					{ x , y - small_size, z - small_size }
+						{ x , y, z },
+						{ x + small_size, y, z },
+						{ x + small_size, y - small_size, z },
+						{ x , y - small_size, z },
+						{ x , y, z - small_size },
+						{ x + small_size, y, z - small_size },
+						{ x + small_size, y - small_size, z - small_size },
+						{ x , y - small_size, z - small_size }
 				};
 				for (int j = 0; j < 8; j++)
 					for (int k = 0; k < 3; k++)
 						v[i][j][k] = a[j][k];
+
 				i += 1;
+
 			}
 		}
 	}
+	for (int i = 0; i < 27; i++) {
+		for (int j = 0; j < 8; j++) {
+			for (int k = 0; k < 3; k++) {
+				printf("%f \t", v[i][j][k]);
+			}
+			printf("\n");
+		}
+		printf("\n\n");
+	}
 }
+void rotaxis(int *arr, char dir, char axis)
+{
+	float angle = 5 * 3.1415 / 180;
+	for (int i = 0; i < 27; i++)
+	{
+		if (i == arr[0] || i == arr[1] || i == arr[2] || i == arr[3] || i == arr[4] || i == arr[5] || i == arr[6] || i == arr[7] || i == arr[8])
+		{
+			for (int j = 0; j < 8; j++)
+			{
+				if (dir == 'c'&& axis == 'x')
+				{
+					float z = v[p[i]][j][2];
+					float y = v[p[i]][j][1];
+					v[p[i]][j][2] = z * cos(angle) - y * sin(angle);
+					v[p[i]][j][1] = y * cos(angle) + z * sin(angle);
+				}
+				else if (dir == 'a'&& axis == 'x')
+				{
+					float z = v[p[i]][j][2];
+					float y = v[p[i]][j][1];
+					v[p[i]][j][2] = z * cos(angle) + y * sin(angle);
+					v[p[i]][j][1] = y * cos(angle) - z * sin(angle);
+				}
 
+				else if (dir == 'c'&& axis == 'y')
+				{
+					float z = v[p[i]][j][2];
+					float x = v[p[i]][j][0];
+					v[p[i]][j][2] = z * cos(angle) - x * sin(angle);
+					v[p[i]][j][0] = x * cos(angle) + z * sin(angle);
+				}
+				else if (dir == 'a'&& axis == 'y')
+				{
+					float z = v[p[i]][j][2];
+					float x = v[p[i]][j][0];
+					v[p[i]][j][2] = z * cos(angle) + x * sin(angle);
+					v[p[i]][j][0] = x * cos(angle) - z * sin(angle);
+				}
+				else if (dir == 'c'&& axis == 'z')
+				{
+					float y = v[p[i]][j][1];
+					float x = v[p[i]][j][0];
+					v[p[i]][j][1] = y * cos(angle) + x * sin(angle);
+					v[p[i]][j][0] = x * cos(angle) - y * sin(angle);
+				}
+				else if (dir == 'a'&& axis == 'z')
+				{
+					float y = v[p[i]][j][1];
+					float x = v[p[i]][j][0];
+					v[p[i]][j][1] = y * cos(angle) - x * sin(angle);
+					v[p[i]][j][0] = x * cos(angle) + y * sin(angle);
+				}
+			}
+		}
+	}
+	theta += 5;
+}
+void pointswap(int *arr, char dir)
+{
+	int temp[27] = { 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+	for (int m = 0; m < 27; m++)
+		temp[m] = arr[m];
+	if (dir == 'c')
+	{
+		p[arr[0]] = temp[2];
+		p[arr[1]] = temp[5];
+		p[arr[2]] = temp[8];
+		p[arr[3]] = temp[1];
+		p[arr[4]] = temp[4];
+		p[arr[5]] = temp[7];
+		p[arr[6]] = temp[0];
+		p[arr[7]] = temp[3];
+		p[arr[8]] = temp[6];
+	}
+	else if (dir == 'a')
+	{
+		p[arr[0]] = temp[6];
+		p[arr[1]] = temp[3];
+		p[arr[2]] = temp[0];
+		p[arr[3]] = temp[7];
+		p[arr[4]] = temp[4];
+		p[arr[5]] = temp[1];
+		p[arr[6]] = temp[8];
+		p[arr[7]] = temp[5];
+		p[arr[8]] = temp[2];
+	}
+}
+void idle()
+{
+	if (f[1] == 1)
+	{
+		int arr[9] = {18,0,9,21,12,3,24,15,6 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'a', 'x');
+		}
+		else
+		{
+			f[1] = 0;
+			theta = 0;
+			pointswap(arr, 'a');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[2] == 1)
+	{
+		int arr[9] = { 6,7,8,15,16,17,24,25,26 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'c', 'y');
+		}
+		else
+		{
+			f[2] = 0;
+			theta = 0;
+			pointswap(arr, 'c');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[3] == 1)
+	{
+		int arr[9] = { 2,11,20,5,14,23,8,17,26 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'a', 'x');
+		}
+		else
+		{
+			f[3] = 0;
+			theta = 0;
+			pointswap(arr, 'a');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[4] == 1)
+	{
+		int arr[9] = { 6,7,8,15,16,17,24,25,26 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'a', 'y');
+		}
+		else
+		{
+			f[4] = 0;
+			theta = 0;
+			pointswap(arr, 'a');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[5] == 1)
+	{
+		int arr[9] = { 0,1,2,3,4,5,6,7,8 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'a', 'z');
+		}
+		else
+		{
+			f[5] = 0;
+			theta = 0;
+			pointswap(arr, 'a');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[6] == 1)
+	{
+		int arr[9] = { 0,1,2,9,10,11,18,19,20 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'c', 'y');
+		}
+		else
+		{
+			f[6] = 0;
+			theta = 0;
+			pointswap(arr, 'c');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[7] == 1)
+	{
+		int arr[9] = { 18,0,9,21,3,12,24,15,6};
+		if (theta < 90)
+		{
+			rotaxis(arr, 'c', 'x');
+		}
+		else
+		{
+			f[7] = 0;
+			theta = 0;
+			pointswap(arr, 'c');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+		
+	}
+	if (f[8] == 1)
+	{
+		int arr[9] = { 0,1,2,9,10,11,18,19,20 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'a', 'y');
+		}
+		else
+		{
+			f[6] = 0;
+			theta = 0;
+			pointswap(arr, 'a');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[9] == 1)
+	{
+		int arr[9] = { 2,11,20,5,14,23,8,17,26 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'c', 'x');
+		}
+		else
+		{
+			f[9] = 0;
+			theta = 0;
+			pointswap(arr, 'c');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+	if (f[0] == 1)
+	{
+		int arr[9] = { 0,1,2,3,4,5,6,7,8 };
+		if (theta < 90)
+		{
+			rotaxis(arr, 'c', 'z');
+		}
+		else
+		{
+			f[0] = 0;
+			theta = 0;
+			pointswap(arr, 'c');
+		}
+		for (int i = 0; i < 10000000; i++);
+		glutPostRedisplay();
+	}
+}
 void buildcube()
 {
-	for (int i = 0; i < 8; i++)
+	for (int i = 0; i < 27; i++)
 		drawcube(v[i][0], v[i][1], v[i][2], v[i][3], v[i][4], v[i][5], v[i][6], v[i][7]);
 }
-
-void display();
-void specialKeys();
-
-// ----------------------------------------------------------
-// Global Variables
-// ----------------------------------------------------------
-double rotate_y = 0;
-double rotate_x = 0;
-
 // ----------------------------------------------------------
 // display() Callback function
 // ----------------------------------------------------------
@@ -136,8 +387,8 @@ void display(void) {
 	buildcube();
 
 	glutSwapBuffers();
-}
 
+}
 // ----------------------------------------------------------
 // specialKeys() Callback Function
 // ----------------------------------------------------------
@@ -168,157 +419,50 @@ void specialKeys(int key, int x, int y) {
 	glutPostRedisplay();
 
 }
-
-void idle1()
-{
-	flagc[1] += 1;
-	float theta = 5 * 3.1415 / 180;
-	for (int i = 0; i < 8; i++)
-	{
-		if (i == 0 || i == 1 || i == 4 || i == 5)
-		{
-			for (int j = 0; j < 8; j++)
-			{
-				float z = v[p[i]][j][2];
-				float x = v[p[i]][j][0];
-				v[p[i]][j][2] = z * cos(theta) - x * sin(theta);
-				v[p[i]][j][0] = x * cos(theta) + z * sin(theta);
-			}
-			glutPostRedisplay();
-		}
-	}
-	int temp = p[0];
-	p[0] = p[4];
-	p[4] = p[5];
-	p[5] = p[1];
-	p[1] = temp;
-	for (int k = 0; k < 9000000; k++);
-	printf("%d", p[0]);
-	if (flagc[1] == 18)
-	{
-		glutIdleFunc(NULL);
-		flagc[1] = 0;
-	}
-}
-void idle2()
-{
-	flagc[2] += 1;
-	float theta = 5 * 3.1415 / 180;
-	for (int i = 0; i < 8; i++)
-	{
-		if (i == 1 || i == 3 || i == 5 || i == 7)
-		{
-			for (int j = 0; j < 8; j++)
-			{
-				float z = v[p[i]][j][2];
-				float y = v[p[i]][j][1];
-				v[p[i]][j][2] = z * cos(theta) - y * sin(theta);
-				v[p[i]][j][1] = y * cos(theta) + z * sin(theta);
-			}
-			glutPostRedisplay();
-		}
-	}
-	int temp = p[1];
-	p[1] = p[3];
-	p[3] = p[7];
-	p[7] = p[5];
-	p[5] = temp;
-	for (int k = 0; k < 9000000; k++);
-
-	if (flagc[2] == 18)
-	{
-		glutIdleFunc(NULL);
-		flagc[2] = 0;
-	}
-}
-void idle3()
-{
-	flagc[3] += 1;
-	float theta = 5 * 3.1415 / 180;
-	for (int i = 0; i < 8; i++)
-	{
-		if (i == 0 || i == 1 || i == 4 || i == 5)
-		{
-			for (int j = 0; j < 8; j++)
-			{
-				float z = v[p[i]][j][2];
-				float x = v[p[i]][j][0];
-				v[p[i]][j][2] = z * cos(theta) + x * sin(theta);
-				v[p[i]][j][0] = x * cos(theta) - z * sin(theta);
-
-			}
-			glutPostRedisplay();
-		}
-	}
-	int temp = p[0];
-	p[0] = p[1];
-	p[1] = p[5];
-	p[5] = p[4];
-	p[4] = temp;
-	for (int k = 0; k < 9000000; k++);
-
-	if (flagc[3] == 18)
-	{
-		glutIdleFunc(NULL);
-		flagc[3] = 0;
-	}
-}
-void idle4()
-{
-	flagc[4] += 1;
-	float theta = 5 * 3.1415 / 180;
-
-	for (int i = 0; i < 8; i++)
-	{
-		if (i == 1 || i == 3 || i == 5 || i == 7)
-		{
-			for (int j = 0; j < 8; j++)
-			{
-				float z = v[p[i]][j][2];
-				float y = v[p[i]][j][1];
-				v[p[i]][j][2] = z * cos(theta) + y * sin(theta);
-				v[p[i]][j][1] = y * cos(theta) - z * sin(theta);
-
-			}
-			glutPostRedisplay();
-		}
-	}
-	int temp = p[1];
-	p[1] = p[5];
-	p[5] = p[7];
-	p[7] = p[3];
-	p[3] = temp;
-	for (int k = 0; k < 9000000; k++);
-	if (flagc[4] == 18)
-	{
-		glutIdleFunc(NULL);
-		flagc[4] = 0;
-	}
-}
 void keyboard(unsigned char key, int x, int y)
 {
-	if (key == 'q')
+	if (key == '1')
 	{
-		//idle1();
-		glutIdleFunc(idle1);
+		f[1] = 1;
 	}
-
-	if (key == 'a')
+	if (key == '2')
 	{
-		//idle2();
-		glutIdleFunc(idle2);
+		f[2] = 1;
 	}
-	if (key == 'w')
-	{	//idle3();
-		glutIdleFunc(idle3);
+	if (key == '3')
+	{
+		f[3] = 1;
 	}
-	if (key == 's')
-	{	//idle4();
-		glutIdleFunc(idle4);
+	if (key == '4')
+	{
+		f[4] = 1;
 	}
-	glutPostRedisplay();
+	if (key == '6')
+	{
+		f[6] = 1;
+	}
+	if (key == '7')
+	{
+		f[7] = 1;
+	}
+	if (key == '8')
+	{
+		f[8] = 1;
+	}
+	if (key == '9')
+	{
+		f[9] = 1;
+	}
+	if (key == '0')
+	{
+		f[0] = 1;
+	}
+	if (key == '5')
+	{
+		f[5] = 1;
+	}
+		glutPostRedisplay();
 }
-
 // ----------------------------------------------------------
 // main() function
 // ----------------------------------------------------------
@@ -334,12 +478,11 @@ int main(int argc, char* argv[]) {
 	init();
 	makepoints();
 	glutDisplayFunc(display);
-	glutIdleFunc(display);
+	glutIdleFunc(idle);
 	glutSpecialFunc(specialKeys);
 	glutKeyboardFunc(keyboard);
 	glutMainLoop();
 
 
 	return 0;
-
 }

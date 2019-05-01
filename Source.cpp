@@ -9,7 +9,7 @@ void init()
 	glLoadIdentity();
 	glOrtho(-2, 2, -2, 2, -2, 2);
 	glMatrixMode(GL_MODELVIEW);
-	GLfloat ambient_lighte[4] = { 0.2,0.2,0.2,1.0 };
+	/*GLfloat ambient_lighte[4] = { 0.2,0.2,0.2,1.0 };
 	GLfloat diffuse_light[4] = { 0.7,0.7,0.7,1.0 };		// color
 	GLfloat specular_light[4] = { 1.0, 1.0, 1.0, 1.0 };	// brightness
 	GLfloat light_position[4] = { 0.0, 50.0, 50.0, 1.0 };
@@ -44,7 +44,7 @@ void init()
 	//glEnable(GL_LIGHTING);
 	//glEnable(GL_LIGHT0);
 	// enable depth buffering
-	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);*/
 }
 float co[7][3] = { {0.3,0.8,0 }, { 0,0.5,1 }, { 1,0.8,0 }, { 0.9,0.9,0.9 }, { 1,0.4,0 }, { 0.9,0,0 }, { 0.2,0.2,0.2 } };
 float v[8][8][3];
@@ -61,9 +61,8 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a2);
 	glVertex3fv(a3);
 	glVertex3fv(a4);
-
 	glEnd();
-
+	
 	// White side - BACK
 	glBegin(GL_POLYGON);
 	glColor3fv(co[1]);
@@ -109,7 +108,7 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a8);
 	glEnd();
 	//glFlush();
-
+	
 }
 
 void makepoints()
@@ -139,6 +138,15 @@ void makepoints()
 				i += 1;
 			}
 		}
+	}
+	for (int i = 0; i < 8; i++) {
+
+		for (int j = 0; j < 8; j++) {
+			for (int k = 0; k < 3; k++) {
+				printf("%f\t", v[i][j][k] * 100);
+			}
+			printf("\n");
+		}printf("\n\n");
 	}
 }
 
@@ -184,6 +192,7 @@ void idle()
 
 void buildcube()
 {
+	int i = 6;
 	for (int i = 0; i < 8; i++)
 		drawcube(v[i][0], v[i][1], v[i][2], v[i][3], v[i][4], v[i][5], v[i][6], v[i][7]);
 }
