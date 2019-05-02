@@ -13,11 +13,13 @@ void init()
 // Global Variables
 // ----------------------------------------------------------
 float co[7][3] = { {0.3,0.8,0 }, { 0,0.5,1 }, { 1,0.8,0 }, { 0.9,0.9,0.9 }, { 1,0.4,0 }, { 0.9,0,0 }, { 0.2,0.2,0.2 } };
-float v[27][8][3];
-int p[27] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26 };
+float ***v;
+
+int *p;
 int f[12] = { 0,0,0,0,0,0,0,0,0,0,0,0 }, theta = 0;
 double rotate_y = 0;
 double rotate_x = 0;
+int n,N;
 // ----------------------------------------------------------
 // Function Prototypes
 // ----------------------------------------------------------
@@ -80,8 +82,9 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 void makepoints()
 {
 	double start = 1.0;
-	double small_size = 0.65;
-	double intercube_spacing = 0.025;
+	double intercube_spacing = 2 / (N-1);
+	double small_size = (2- intercube_spacing)/N;
+	
 	int i = 0;
 	for (double z = start; z > -start; z -= small_size + intercube_spacing) {
 		for (double y = start; y > -start; y -= small_size + intercube_spacing) {
@@ -105,22 +108,17 @@ void makepoints()
 			}
 		}
 	}
-	for (int i = 0; i < 27; i++) {
-		for (int j = 0; j < 8; j++) {
-			for (int k = 0; k < 3; k++) {
-				printf("%f \t", v[i][j][k]);
-			}
-			printf("\n");
-		}
-		printf("\n\n");
-	}
+	
 }
-void rotaxis(int *arr, char dir, char axis)
+void rotaxis(int **arr, char dir, char axis)
 {
 	float angle = 5 * 3.1415 / 180;
-	for (int i = 0; i < 27; i++)
+	for (int i = 0; i < n; i++)
 	{
-		if (i == arr[0] || i == arr[1] || i == arr[2] || i == arr[3] || i == arr[4] || i == arr[5] || i == arr[6] || i == arr[7] || i == arr[8])
+		
+		for(int ii=0;ii<N;ii++)
+		for (int jj = 0; jj < N; jj++)
+		if (i == arr[ii][jj] )//|| i == arr[1] || i == arr[2] || i == arr[3] || i == arr[4] || i == arr[5] || i == arr[6] || i == arr[7] || i == arr[8])
 		{
 			for (int j = 0; j < 8; j++)
 			{
@@ -172,43 +170,66 @@ void rotaxis(int *arr, char dir, char axis)
 	}
 	theta += 5;
 }
-void pointswap(int *arr, char dir)
+void pointswap(int **arr, char dir)
 {
-	int temp[9] = { 0,0,0,0,0,0,0,0,0 };
-	for (int m = 0; m < 9; m++)
-		temp[m] = p[arr[m]];
+	int **temp;
+	temp= (int **)malloc(sizeof(int **)*N);
+	for (int i = 0; i < N; i++)
+		temp[N] = (int *)malloc(sizeof(int*)*N);
+
+	for (int ii = 0; ii < N; ii++)
+		for (int jj = 0; jj < N; jj++)
+		temp[ii][jj] = p[arr[ii][jj]];
+	
 	if (dir == 'a')
 	{
-		p[arr[0]] = temp[2];
-		p[arr[1]] = temp[5];
-		p[arr[2]] = temp[8];
-		p[arr[3]] = temp[1];
-		p[arr[4]] = temp[4];
-		p[arr[5]] = temp[7];
-		p[arr[6]] = temp[0];
-		p[arr[7]] = temp[3];
-		p[arr[8]] = temp[6];
+		int i = 0, j = 0;
+		for (int ii = N; ii >0; ii--)
+		{
+
+			for (int jj = 0; jj <N; jj++)
+			{
+				p[arr[i][j]] = temp[ii][jj];
+				j++;
+			}
+			i++;
+		}
 	}
 	else if (dir == 'c')
 	{
-		p[arr[0]] = temp[6];
-		p[arr[1]] = temp[3];
-		p[arr[2]] = temp[0];
-		p[arr[3]] = temp[7];
-		p[arr[4]] = temp[4];
-		p[arr[5]] = temp[1];
-		p[arr[6]] = temp[8];
-		p[arr[7]] = temp[5];
-		p[arr[8]] = temp[2];
+		int i = 0, j = 0;
+		for (int ii = 0; ii < N; ii++)
+		{
+
+			for (int jj = N; jj > 0; jj--)
+			{
+				p[arr[i][j]] = temp[ii][jj];
+				j++;
+			}
+			i++;
+		}
 	}
-	for (int i = 0; i < 9; i++)
-		printf("%d ", p[arr[i]]);
+	
 }
 void idle()
 {
+	int **arr;
+	arr = (int **)malloc(sizeof(int **)*N);
+	for (int i = 0; i < N; i++)
+		arr[N] = (int *)malloc(sizeof(int*)*N);
+
 	if (f[1] == 1)
 	{
-		int arr[9] = { 18,9,0,21,12,3,24,15,6 };
+		int t = 0;
+		for (int j = N; j > 0 ;j--)
+		
+		{
+			for (int i = 0; i < N; i++)
+			{
+				arr[i][j] = t;
+				t += 3;
+			}
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'a', 'x');
@@ -224,7 +245,16 @@ void idle()
 	}
 	if (f[2] == 1)
 	{
-		int arr[9] = { 6,7,8,15,16,17,24,25,26 };
+		int t = n - N;;
+		for (int i=0;i<N;i++)
+
+		{
+			for (int j=0;j<N;j++)
+			{
+				arr[i][j] = t;
+				t ++;
+			}t = t + N;
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'a', 'y');
@@ -240,7 +270,15 @@ void idle()
 	}
 	if (f[3] == 1)
 	{
-		int arr[9] = { 2,11,20,5,14,23,8,17,26 };
+		int t = N - 1;
+		for (int j = 0; j < N; j++)
+		{
+			for (int i = 0; i < N; i++)
+			{
+				arr[i][j] = t;
+				t += 3;
+			}
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'a', 'x');
@@ -256,7 +294,16 @@ void idle()
 	}
 	if (f[4] == 1)
 	{
-		int arr[9] = { 6,7,8,15,16,17,24,25,26 };
+		int t = n - N;;
+		for (int i = 0; i < N; i++)
+
+		{
+			for (int j = 0; j < N; j++)
+			{
+				arr[i][j] = t;
+				t++;
+			}t = t + N;
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'c', 'y');
@@ -271,8 +318,14 @@ void idle()
 		glutPostRedisplay();
 	}
 	if (f[5] == 1)
-	{
-		int arr[9] = { 0,1,2,3,4,5,6,7,8 };
+	{	
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				arr[i][j] = i + j;
+			}
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'a', 'z');
@@ -288,7 +341,16 @@ void idle()
 	}
 	if (f[6] == 1)
 	{
-		int arr[9] = { 0,1,2,9,10,11,18,19,20 };
+		int t = 0;
+		for (int i = N; i > 0; i--)
+
+		{
+			for (int j = 0; j < N; j++)
+			{
+				arr[i][j] = t;
+				t++;
+			}t = t + n - N + 1;;
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'a', 'y');
@@ -304,7 +366,16 @@ void idle()
 	}
 	if (f[7] == 1)
 	{
-		int arr[9] = { 18,9,0,21,12,3,24,15,6 };
+		int t = 0;
+		for (int j = N; j > 0; j--)
+
+		{
+			for (int i = 0; i < N; i++)
+			{
+				arr[i][j] = t;
+				t += 3;
+			}
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'c', 'x');
@@ -321,7 +392,16 @@ void idle()
 	}
 	if (f[8] == 1)  //TOP'
 	{
-		int arr[9] = { 0,1,2,9,10,11,18,19,20 };
+		int t =0;
+		for (int i = N; i>0; i--)
+
+		{
+			for (int j = 0; j < N; j++)
+			{
+				arr[i][j] = t;
+				t++;
+			}t = t + n - N + 1;;
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'c', 'y');
@@ -337,7 +417,15 @@ void idle()
 	}
 	if (f[9] == 1)
 	{
-		int arr[9] = { 2,11,20,5,14,23,8,17,26 };
+		int t = N - 1;
+		for (int j = 0; j<N ;j++)
+		{
+			for (int i = 0; i < N; i++)
+			{
+				arr[i][j] = t;
+				t += 3;
+			}
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'c', 'x');
@@ -353,7 +441,14 @@ void idle()
 	}
 	if (f[0] == 1) //face-C
 	{
-		int arr[9] = { 0,1,2,3,4,5,6,7,8 };
+
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				arr[i][j] = i + j;
+			}
+		}
 		if (theta < 90)
 		{
 			rotaxis(arr, 'c', 'z');
@@ -370,7 +465,7 @@ void idle()
 }
 void buildcube()
 {
-	for (int i = 0; i < 27; i++)
+	for (int i = 0; i < n; i++)
 		drawcube(v[i][0], v[i][1], v[i][2], v[i][3], v[i][4], v[i][5], v[i][6], v[i][7]);
 }
 // ----------------------------------------------------------
@@ -478,13 +573,34 @@ int main(int argc, char* argv[]) {
 
 	glEnable(GL_DEPTH_TEST);
 	init();
+	printf("Enter the N value for NxN rubik cube:\t");
+	scanf_s("%d", &N);
+	int n = N * N*N;
+	
+	v = (float ***)malloc(sizeof(float ***)*n);
+
+	for (int i = 0; i < n; i++)
+	{
+		v[i] = (float **)malloc(sizeof(float*)*n);
+	 	for (int j = 0; j < 8; j++)
+		{
+			v[i][j] = (float *)malloc(sizeof(float)*3);
+	
+		}
+	
+	}
+	p = (int *)malloc(sizeof(int *)*n);
+	for (int i = 0; i < n; i++)
+		p[i] = i;
+
+	
 	makepoints();
 	glutDisplayFunc(display);
 	glutIdleFunc(idle);
 	glutSpecialFunc(specialKeys);
 	glutKeyboardFunc(keyboard);
 	glutMainLoop();
-
+	
 
 	return 0;
 }
