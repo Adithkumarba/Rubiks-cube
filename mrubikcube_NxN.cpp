@@ -81,10 +81,13 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 }
 void makepoints()
 {
-	double start = 1.0;
-	double intercube_spacing = 2 / (N-1);
-	double small_size = (2- intercube_spacing)/N;
+	long double start = 1.0;
+	long double intercube_spacing = ( 2 / (N - 1)) / 40;
+	long double small_size = (2-( (N-1)*intercube_spacing))/N;
 	
+	printf("%lf \n", small_size);
+	printf("%lf\n", intercube_spacing);
+	printf("%d",N / 2);
 	int i = 0;
 	for (double z = start; z > -start; z -= small_size + intercube_spacing) {
 		for (double y = start; y > -start; y -= small_size + intercube_spacing) {
