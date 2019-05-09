@@ -18,7 +18,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\mrubikcube_NxN.cpp">
+    <ClCompile Include="..\..\mrubikcube_3x3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

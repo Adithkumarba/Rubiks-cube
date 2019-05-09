@@ -105,15 +105,7 @@ void makepoints()
 			}
 		}
 	}
-	for (int i = 0; i < 27; i++) {
-		for (int j = 0; j < 8; j++) {
-			for (int k = 0; k < 3; k++) {
-				printf("%f \t", v[i][j][k]);
-			}
-			printf("\n");
-		}
-		printf("\n\n");
-	}
+	
 }
 void rotaxis(int *arr, char dir, char axis)
 {
@@ -201,8 +193,7 @@ void pointswap(int *arr, char dir)
 		p[arr[7]] = temp[5];
 		p[arr[8]] = temp[2];
 	}
-	for (int i = 0; i < 9; i++)
-		printf("%d ", p[arr[i]]);
+	
 }
 void idle()
 {
