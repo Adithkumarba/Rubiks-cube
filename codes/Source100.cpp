@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <stdarg.h>
 #include <math.h>
 #include <GL/glut.h>
+
 void init()
 {
 	glMatrixMode(GL_PROJECTION);
@@ -9,18 +9,16 @@ void init()
 	glOrtho(-2, 2, -2, 2, -2, 2);
 	glMatrixMode(GL_MODELVIEW);
 }
-// ----------------------------------------------------------
-// Global Variables
-// ----------------------------------------------------------
+
+
 float co[7][3] = { {0.3,0.8,0 }, { 0,0.5,1 }, { 1,0.8,0 }, { 0.9,0.9,0.9 }, { 1,0.4,0 }, { 0.9,0,0 }, { 0.2,0.2,0.2 } };
 float v[27][8][3];
 int p[27] = { 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26 };
 int f[12] = { 0,0,0,0,0,0,0,0,0,0,0,0 }, theta = 0;
 double rotate_y = 20;
 double rotate_x = 15;
-// ----------------------------------------------------------
-// Function Prototypes
-// ----------------------------------------------------------
+
+
 void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, float *a7, float *a8)
 {
 	glBegin(GL_POLYGON);
@@ -31,7 +29,7 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a4);
 	glEnd();
 
-	// White side - BACK
+	
 	glBegin(GL_POLYGON);
 	glColor3fv(co[1]);
 	glVertex3fv(a5);
@@ -40,7 +38,7 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a8);
 	glEnd();
 
-	// Purple side - RIGHT
+	
 	glBegin(GL_POLYGON);
 	glColor3fv(co[2]);
 	glVertex3fv(a2);
@@ -49,7 +47,7 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a3);
 	glEnd();
 
-	// Green side - LEFT
+	
 	glBegin(GL_POLYGON);
 	glColor3fv(co[3]);
 	glVertex3fv(a1);
@@ -58,7 +56,7 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a4);
 	glEnd();
 
-	// Blue side - TOP
+	
 	glBegin(GL_POLYGON);
 	glColor3fv(co[4]);
 	glVertex3fv(a1);
@@ -67,7 +65,7 @@ void drawcube(float *a1, float *a2, float *a3, float *a4, float *a5, float *a6, 
 	glVertex3fv(a5);
 	glEnd();
 
-	// Red side - BOTTOM
+	
 	glBegin(GL_POLYGON);
 	glColor3fv(co[5]);
 	glVertex3fv(a4);
@@ -342,7 +340,7 @@ void idle()
 		for (int i = 0; i < 8000000; i++);
 		glutPostRedisplay();
 	}
-	if (f[0] == 1) //face-C
+	if (f[0] == 1) 
 	{
 		int arr[9] = { 0,1,2,3,4,5,6,7,8 };
 		if (theta < 90)
@@ -396,11 +394,10 @@ void buildcube()
 	for (int i = 0; i < 27; i++)
 		drawcube(v[i][0], v[i][1], v[i][2], v[i][3], v[i][4], v[i][5], v[i][6], v[i][7]);
 }
-// ----------------------------------------------------------
-// display() Callback function
-// ----------------------------------------------------------
+
+
 void display(void) {
-	//  Clear screen and Z-buffer
+	
 	glClearColor(0, 0, 0, 1);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -414,17 +411,16 @@ void display(void) {
 	glutSwapBuffers();
 
 }
-// ----------------------------------------------------------
-// specialKeys() Callback Function
-// ----------------------------------------------------------
+ 
+
 void specialKeys(int key, int x, int y) {
 
-	//  Right arrow - increase rotation by 5 degree
+	
 	if (key == GLUT_KEY_RIGHT)
 	{
 		rotate_y += 5;
 	}
-	//  Left arrow - decrease rotation by 5 degree
+	
 	else if (key == GLUT_KEY_LEFT)
 	{
 		rotate_y -= 5;
@@ -440,7 +436,7 @@ void specialKeys(int key, int x, int y) {
 		rotate_x -= 5;
 	}
 
-	//  Request display update
+	
 	glutPostRedisplay();
 
 }
@@ -496,9 +492,24 @@ void keyboard(unsigned char key, int x, int y)
 	}
 	glutPostRedisplay();
 }
-// ----------------------------------------------------------
-// main() function
-// ----------------------------------------------------------
+
+void reshape(int w, int h)
+{
+	glViewport(0, 0, w, h);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	if (w <= h)
+	{
+		glOrtho(-2, 2, -2 * (GLfloat)h / (GLfloat)w, 2 * (GLfloat)h / (GLfloat)w, -2, 2);
+	}
+	else
+	{
+		glOrtho(-2 * (GLfloat)w / (GLfloat)h, 2 * (GLfloat)w / (GLfloat)h, -2, 2, -2, 2);
+	}
+	glMatrixMode(GL_MODELVIEW);
+}
+
+
 int main(int argc, char* argv[]) {
 
 	glutInit(&argc, argv);
@@ -511,6 +522,7 @@ int main(int argc, char* argv[]) {
 	init();
 	makepoints();
 	glutDisplayFunc(display);
+	glutReshapeFunc(reshape);
 	glutIdleFunc(idle);
 	glutSpecialFunc(specialKeys);
 	glutKeyboardFunc(keyboard);
